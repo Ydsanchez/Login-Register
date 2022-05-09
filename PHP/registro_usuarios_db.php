@@ -1,4 +1,4 @@
-<?
+<?php
 include 'conexion_db.php';
 
 $nombre_completo = $_POST['nombre_completo'];
