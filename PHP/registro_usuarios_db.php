@@ -1,13 +1,57 @@
 <?php
-include 'conexion_db.php';
+    include 'conexion_db.php';
 
-$nombre_completo = $_POST['nombre_completo'];
-$correo = $_POST['correo'];
-$usuario = $_POST['usuario'];
-$contrasena = $_POST['contrasena'];
+    $nombre_completo = $_POST['nombre_completo'];
+    $correo = $_POST['correo'];
+    $usuario = $_POST['usuario'];
+    $contrasena = $_POST['contrasena'];
 
-$query = "INSERT INTO usuarios(nombre_completo,correo,usuario,contrasena) 
-          VALUES('$nombre_completo', '$correo', '$usuario', '$contrasena')";
+    $query = "INSERT INTO usuarios(nombre_completo,correo,usuario,contrasena) 
+            VALUES('$nombre_completo', '$correo', '$usuario', '$contrasena')";
 
-$ejecutar = mysqli_query($conexiondb, $query);
+    //VERIFICAR QUE NO SE REPITA EL CORREO EN LA BASE DE DATOS
+    $verificar_correo = mysqli_query($conexiondb, "SELECT * FROM usuarios WHERE correo='$correo' ");
+
+    if(mysqli_num_rows($verificar_correo) > 0){
+        echo '
+            <script>
+                alert("Correo ya registrado en la base de datos, intente nuevamente");
+                window.location = "../index.php";
+            </script>    
+        ';
+        exit();
+    }
+
+    //VERIFICAR QUE NO SE REPITA EL USUARIO EN LA BASE DE DATOS
+    $verificar_usuario = mysqli_query($conexiondb, "SELECT * FROM usuarios WHERE usuario='$usuario' ");
+
+    if(mysqli_num_rows($verificar_usuario) > 0){
+        echo '
+            <script>
+                alert("Usuario ya registrado en la base de datos, intente nuevamente");
+                window.location = "../index.php";
+            </script>    
+        ';
+        exit();
+    }
+
+    $ejecutar = mysqli_query($conexiondb, $query);
+
+    if($ejecutar){
+        echo '
+            <script>
+                alert("Usuario almacenado exitosamente");
+                window.location = "../index.php";    
+            </script>
+        ';
+    }else{
+        echo '
+            <script>
+                alert("Intentalo de nuevo, usuario no almacenado");
+                window.location = "../index.php";
+            </script>
+        ';
+    }
+
+    mysqli_close($conexiondb);
 ?>
